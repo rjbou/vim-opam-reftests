@@ -7,7 +7,7 @@ if exists("b:current_syntax")
   finish
 endif
 
-syn match trepohash "\%^[0-9a-fA-F]\{6,10}"
+syn match trepohash "\%^\([0-9a-fA-F]\{6,10}\|N0REP0\)"
 
 syn match terror "^# Return code \d\+ #$" contained
 syn match tcomment "^### [#:].*$"
