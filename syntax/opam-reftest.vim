@@ -13,18 +13,28 @@ syn match terror "^# Return code \d\+ #$" contained
 syn match tcomment "^### [#:].*$"
 
 " regions
+
+" older regexp: "^### <\(\(.*\.\(ml\|sh\)>\)\@![^>]\+>\)$"
+" keep that generic regions at top, they are overwritten by syntax specific ones
+syn region tfilecontent matchgroup=ttfile start="^### <.\+>$"    end="^###"me=s-1 transparent contains=tfc,tcomment    nextgroup=tfilecontent,tcontent,tmlcontent,tshcontent,topamcontent
+syn region tcontent     matchgroup=ttcmd  start="^### [^<#:].*$" end="^###"me=s-1 transparent contains=tc,terror,tcomment  nextgroup=tfilecontent,tcontent,tmlcontent,tshcontent,topamcontent
+
+" external syntax regions
+syn include @opam syntax/opam.vim
+unlet b:current_syntax
+syn region topamcontent matchgroup=topamfile  start="^### <\(\(pkg:[a-zA-Z0-9-_]\+[.][a-zA-Z0-9-_~]\+\)\|\(.\+\.opam\)\)>$"  end="^###"me=s-1 transparent contains=@opam   nextgroup=tfilecontent,tcontent,tmlcontent,tshcontent,topamcontent
+
 syn include @shscript syntax/sh.vim
-syn region tshcontent matchgroup=tshfile  start="^### <.\+\.sh>$"  end="^###"me=s-1 transparent contains=@shscript   nextgroup=tfilecontent,tcontent,tmlcontent,tshcontent
+unlet b:current_syntax
+syn region tshcontent matchgroup=tshfile  start="^### <.\+\.sh>$"  end="^###"me=s-1 transparent contains=@shscript   nextgroup=tfilecontent,tcontent,tmlcontent,tshcontent,topamcontent
 
 syn include @ocaml syntax/ocaml.vim
-syn region tmlcontent matchgroup=tmlfile  start="^### <.\+\.ml>$"  end="^###"me=s-1 transparent contains=@ocaml      nextgroup=tfilecontent,tcontent,tmlcontent,tshcontent
-
-syn region tfilecontent matchgroup=ttfile start="^### <\(\(.*\.\(ml\|sh\)>\)\@![^>]\+>\)$"  end="^###"me=s-1 transparent contains=tfc,tcomment    nextgroup=tfilecontent,tcontent,tmlcontent,tshcontent
-syn region tcontent     matchgroup=ttcmd  start="^### [^<#:].*$"   end="^###"me=s-1 transparent contains=tc,terror,tcomment  nextgroup=tfilecontent,tcontent,tmlcontent,tshcontent
+unlet b:current_syntax
+syn region tmlcontent matchgroup=tmlfile  start="^### <.\+\.ml>$"  end="^###"me=s-1 transparent contains=@ocaml      nextgroup=tfilecontent,tcontent,tmlcontent,tshcontent,topamcontent
 
 " content definition
-syn match tfc "^\(###\)\@!.*" contained nextgroup=tfilecontent,tcontent,tmlcontent,tshcontent
-syn match tc  "^\(###\|# Return\)\@!.*" contained nextgroup=tfilecontent,tcontent,tmlcontent,tshcontent
+syn match tfc "^\(###\)\@!.*" contained nextgroup=tfilecontent,tcontent,tmlcontent,tshcontent,topamcontent
+syn match tc  "^\(###\|# Return\)\@!.*" contained nextgroup=tfilecontent,tcontent,tmlcontent,tshcontent,topamcontent
 
 " highlighting
 hi def link tfc            Include
@@ -44,6 +54,9 @@ hi def link tmlcontent     SpecialComment
 
 hi def link tshfile        Directory
 hi def link tshcontent     SpecialComment
+
+hi def link topamfile      Directory
+hi def link topamcontent   SpecialComment
 
 
 " define current syntax at the end to permit fenced code blocks
