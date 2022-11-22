@@ -22,7 +22,7 @@ syn region tcontent     matchgroup=ttcmd  start="^### [^<#:].*$" end="^###"me=s-
 " external syntax regions
 syn include @opam syntax/opam.vim
 unlet b:current_syntax
-syn region topamcontent matchgroup=topamfile  start="^### <\(\(pkg:[a-zA-Z0-9-_]\+[.][a-zA-Z0-9-_~]\+\)\|\(.\+\.opam\)\)>$"  end="^###"me=s-1 transparent contains=@opam   nextgroup=tfilecontent,tcontent,tmlcontent,tshcontent,topamcontent
+syn region topamcontent matchgroup=topamfile  start="^### <\(\(pkg:[a-zA-Z0-9-_]\+[.][a-zA-Z0-9-_~.]\+\)\|\(.\+\.opam\(\.locked\)\?\)\)>$"  end="^###"me=s-1 transparent contains=@opam   nextgroup=tfilecontent,tcontent,tmlcontent,tshcontent,topamcontent
 
 syn include @shscript syntax/sh.vim
 unlet b:current_syntax
